@@ -1,6 +1,7 @@
 package pro.yuchen.demo.java8.chapter_02;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -13,8 +14,17 @@ import java.util.stream.Stream;
 public class Example {
 
 	public static void main(String[] args) {
+
 //		example_004_00();
-		example_004_01();
+//		example_004_01();
+
+		// 状态转换, 在去重复或排序后, 会返回一个新的流
+//		example_005_00();
+//		example_005_01();
+
+		// 聚合
+//		example_006_00();
+
 
 	}
 
@@ -49,6 +59,27 @@ public class Example {
 								.peek(e -> System.out.println("Fetching " + e))
 								.limit(20).toArray();
 	}
+
+	/**
+	 * 去重
+	 */
+	private static void example_005_00() {
+		Stream<String> stream = Stream.of("A", "A", "A", "B").distinct();
+		stream.forEach(System.out::println);
+	}
+
+	/**
+	 * 排序
+	 */
+	private static void example_005_01() {
+
+		// 先比较字符串长度, 若长度相同则比较Ascii, 反转结果
+		Stream<String> stream = Stream.of("SSS", "SS", "S", "A", "B", "C", "D")
+									  .sorted(Comparator.comparing(String::length)
+									  .thenComparing(Comparator.comparingInt(x -> x.charAt(0))).reversed());
+		stream.forEach(System.out::println);
+	}
+
 
 
 }
