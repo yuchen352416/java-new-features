@@ -29,15 +29,13 @@ public class Example {
 		List<String> list = array.stream().limit(pageSize).collect(Collectors.toList());
 		list.forEach(System.out::print);
 		System.out.println();
-
+		// skip 返回跳过n个元素的新流
 		list = array.stream().skip(pageSize * pageNum).collect(Collectors.toList());
 		list.forEach(System.out::print);
 		System.out.println();
-
+		// 模拟分页
 		list = array.stream().skip(pageSize * pageNum).limit(pageSize).collect(Collectors.toList());
 		list.forEach(System.out::print);
-
-
 	}
 
 	private static void example_002() {
