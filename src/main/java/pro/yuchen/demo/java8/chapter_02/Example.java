@@ -13,15 +13,15 @@ import java.util.stream.Stream;
 public class Example {
 
 	public static void main(String[] args) {
-		example_004();
+//		example_004_00();
+		example_004_01();
 
 	}
-
 
 	/**
 	 * 模拟分页
 	 */
-	private static void example_004() {
+	private static void example_004_00() {
 		int pageSize = 4;
 		int pageNum = 1;
 		List<String> array = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
@@ -38,10 +38,16 @@ public class Example {
 		list.forEach(System.out::print);
 	}
 
-	private static void example_002() {
-		Stream<String> stream = Stream.of("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
-		List<String> list = stream.limit(4).collect(Collectors.toList());
-		list.forEach(System.out::println);
+	/**
+	 * 无限流与peek
+	 */
+	private static void example_004_01() {
+		// iterate 生成无限流
+		// peek 会产生一个与原来相同的新流, 并每获得一个元素, 都会调用一次函数
+		// limit 流的结束符
+		Object[] powers = Stream.iterate(1.0, x -> x * 2)
+								.peek(e -> System.out.println("Fetching " + e))
+								.limit(20).toArray();
 	}
 
 
