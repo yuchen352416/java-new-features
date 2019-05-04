@@ -3,6 +3,7 @@ package pro.yuchen.demo.java8.chapter_02;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -24,6 +25,8 @@ public class Example {
 
 		// 聚合
 //		example_006_00();
+//		example_006_01();
+		example_006_02();
 
 
 	}
@@ -78,6 +81,29 @@ public class Example {
 									  .sorted(Comparator.comparing(String::length)
 									  .thenComparing(Comparator.comparingInt(x -> x.charAt(0))).reversed());
 		stream.forEach(System.out::println);
+	}
+
+	/**
+	 * 拿到最大值
+	 */
+	private static void example_006_00() {
+		Optional<String> largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").max(String::compareToIgnoreCase);
+		System.out.println(largest.get());
+	}
+
+	private static void example_006_01() {
+		// 查找第一个符合条件的item(找到第一个, 结束流)
+		Optional<String> largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").filter(x -> x.startsWith("S")).findFirst();
+		System.out.println(largest.get());
+
+		// 查找任意一下符合条件的item, 多用于并行环境下(任意线程找到, 结束流)
+		largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").filter(x -> x.startsWith("S")).findAny();
+		System.out.println(largest.get());
+	}
+
+	private static void example_006_02() {
+		boolean largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").parallel().anyMatch(x -> x.startsWith("S"));
+		System.out.println(largest);
 	}
 
 
