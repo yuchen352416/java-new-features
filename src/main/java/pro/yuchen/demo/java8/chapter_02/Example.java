@@ -91,6 +91,9 @@ public class Example {
 		System.out.println(largest.get());
 	}
 
+	/**
+	 * 查找符合条件的item
+	 */
 	private static void example_006_01() {
 		// 查找第一个符合条件的item(找到第一个, 结束流)
 		Optional<String> largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").filter(x -> x.startsWith("S")).findFirst();
@@ -101,6 +104,9 @@ public class Example {
 		System.out.println(largest.get());
 	}
 
+	/**
+	 * 是否匹配
+	 */
 	private static void example_006_02() {
 		boolean largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").parallel().anyMatch(x -> x.startsWith("S"));
 		System.out.println(largest);
