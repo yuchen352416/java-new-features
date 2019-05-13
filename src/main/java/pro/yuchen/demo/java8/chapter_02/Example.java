@@ -1,5 +1,7 @@
 package pro.yuchen.demo.java8.chapter_02;
 
+import org.junit.Test;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -14,27 +16,11 @@ import java.util.stream.Stream;
  */
 public class Example {
 
-	public static void main(String[] args) {
-
-//		example_004_00();
-//		example_004_01();
-
-		// 状态转换, 在去重复或排序后, 会返回一个新的流
-//		example_005_00();
-//		example_005_01();
-
-		// 聚合
-//		example_006_00();
-//		example_006_01();
-		example_006_02();
-
-
-	}
-
 	/**
 	 * 模拟分页
 	 */
-	private static void example_004_00() {
+	@Test
+	public void example_004_00() {
 		int pageSize = 4;
 		int pageNum = 1;
 		List<String> array = Arrays.asList("0", "1", "2", "3", "4", "5", "6", "7", "8", "9");
@@ -54,7 +40,8 @@ public class Example {
 	/**
 	 * 无限流与peek
 	 */
-	private static void example_004_01() {
+	@Test
+	public void example_004_01() {
 		// iterate 生成无限流
 		// peek 会产生一个与原来相同的新流, 并每获得一个元素, 都会调用一次函数
 		// limit 流的结束符
@@ -66,7 +53,8 @@ public class Example {
 	/**
 	 * 去重
 	 */
-	private static void example_005_00() {
+	@Test
+	public void example_005_00() {
 		Stream<String> stream = Stream.of("A", "A", "A", "B").distinct();
 		stream.forEach(System.out::println);
 	}
@@ -74,7 +62,8 @@ public class Example {
 	/**
 	 * 排序
 	 */
-	private static void example_005_01() {
+	@Test
+	public void example_005_01() {
 
 		// 先比较字符串长度, 若长度相同则比较Ascii, 反转结果
 		Stream<String> stream = Stream.of("SSS", "SS", "S", "A", "B", "C", "D")
@@ -86,7 +75,8 @@ public class Example {
 	/**
 	 * 拿到最大值
 	 */
-	private static void example_006_00() {
+	@Test
+	public void example_006_00() {
 		Optional<String> largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").max(String::compareToIgnoreCase);
 		System.out.println(largest.get());
 	}
@@ -94,7 +84,8 @@ public class Example {
 	/**
 	 * 查找符合条件的item
 	 */
-	private static void example_006_01() {
+	@Test
+	public void example_006_01() {
 		// 查找第一个符合条件的item(找到第一个, 结束流)
 		Optional<String> largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").filter(x -> x.startsWith("S")).findFirst();
 		System.out.println(largest.get());
@@ -107,10 +98,28 @@ public class Example {
 	/**
 	 * 是否匹配
 	 */
-	private static void example_006_02() {
+	@Test
+	public void example_006_02() {
+		// 任意元素匹配
 		boolean largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").parallel().anyMatch(x -> x.startsWith("S"));
 		System.out.println(largest);
+
+		// 所有元素都匹配
+		largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").parallel().allMatch(x -> x.startsWith("S"));
+		System.out.println(largest);
+
+		// 没有元素匹配
+		largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D", "").parallel().noneMatch(String::isEmpty);
+		System.out.println(largest);
 	}
+
+	@Test
+	public void example_007_01() {
+
+	}
+
+
+
 
 
 
