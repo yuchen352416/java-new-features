@@ -131,7 +131,7 @@ public class Example {
 	/**
 	 * 为空时, 别外的选择(默认值)
 	 */
-	@Test
+	@Test(expected=RuntimeException.class)
 	public void example_007_02() {
 
 		Optional<String> optional = Stream.of("A", "B", "C").filter(x -> x.length() > 0).findFirst();
