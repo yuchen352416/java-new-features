@@ -1,11 +1,10 @@
 package pro.yuchen.demo.java8.chapter_02;
 
+import cn.hutool.core.util.StrUtil;
+import com.google.common.collect.Lists;
 import org.junit.Test;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -102,25 +101,77 @@ public class Example {
 	public void example_006_02() {
 		// 任意元素匹配
 		boolean largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").parallel().anyMatch(x -> x.startsWith("S"));
+		// true
 		System.out.println(largest);
 
 		// 所有元素都匹配
 		largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").parallel().allMatch(x -> x.startsWith("S"));
+		// false
 		System.out.println(largest);
 
 		// 没有元素匹配
 		largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D", "").parallel().noneMatch(String::isEmpty);
+		// false
 		System.out.println(largest);
 	}
 
+	/**
+	 * 优雅的选择执行
+	 */
 	@Test
 	public void example_007_01() {
+		String str = "";
+		Optional<String> option = Optional.of(str);
+		List<String> list = Lists.newArrayList();
+		// ifPresent 如果Optional中元素,不为空则调用方法, 反之则不调用
+		option.filter(StrUtil::isNotBlank).ifPresent(list::add);
+		System.out.println(list.size());
+	}
+
+	/**
+	 * 为空时, 别外的选择(默认值)
+	 */
+	@Test
+	public void example_007_02() {
+
+		Optional<String> optional = Stream.of("A", "B", "C").filter(x -> x.length() > 0).findFirst();
+		String str = optional.orElse("XX");
+		System.out.println(optional.isPresent()); // true
+		System.out.println(str); // A
+
+		optional = Stream.of("A", "B", "C").filter(x -> x.length() > 1).findFirst();
+		str = optional.orElse("XX");
+		System.out.println(optional.isPresent()); // false
+		System.out.println(str); // XX
+
+		optional = Stream.of("A", "B", "C").filter(x -> x.length() > 1).findFirst();
+		str = optional.orElseGet(() -> {
+			System.out.println("Not Fond...");
+			return "VV";
+		});
+		System.out.println(optional.isPresent()); // false
+		System.out.println(str); // VV
+
+		optional = Stream.of("A", "B", "C").filter(x -> x.length() > 1).findFirst();
+		str = optional.orElseThrow(() -> {
+			System.out.println("Can not null...");
+			return new RuntimeException("Can not null...");
+		});
+	}
+
+	@Test
+	public void example_007_03() {
 
 	}
 
-
-
-
-
-
+	@Test
+	public void example() {
+		String expression = "TEXT_1 +sum (TEXT_2)";
+		List<String> functions = Arrays.asList("AVG", "COUNT", "MAX", "MIN", "SUM",
+											   "COUNT_BIG", "GROUPING", "BINARY_CHECKSUM", "CHECKSUM_AGG",
+											   "CHECKSUM", "STDEV", "STDEVP", "VAR", "VARP");
+		boolean isAgg = functions.stream().parallel().anyMatch(x -> expression.replace(" ", "").toLowerCase().contains(x.toLowerCase() + "("));
+		System.out.println(isAgg);
+		System.out.println(expression);
+	}
 }
