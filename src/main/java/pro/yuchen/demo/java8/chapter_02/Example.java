@@ -161,8 +161,31 @@ public class Example {
 
 	@Test
 	public void example_007_03() {
+		Double x = 3.0;
+		Optional<Double> optional = x > 0 ? Optional.of(1 / x) : Optional.empty();
+		System.out.println(optional.get());
+
+		// value == null ? empty() : of(value)
+		optional = Optional.ofNullable(x);
+		System.out.println(optional.get());
+	}
+
+	@Test
+	public void example_007_04() {
 
 	}
+
+	@Test
+	public void example_008_00() {
+		// e op x = x 做为起点
+		Stream<Integer> values = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+		Optional<Integer> sum = values.reduce((x, y) -> x + y);
+		System.out.println(sum.get());
+		sum = values.reduce(Integer::sum);
+		System.out.println(sum.get());
+	}
+
+
 
 	@Test
 	public void example() {
@@ -174,4 +197,8 @@ public class Example {
 		System.out.println(isAgg);
 		System.out.println(expression);
 	}
+
+
+
+
 }
