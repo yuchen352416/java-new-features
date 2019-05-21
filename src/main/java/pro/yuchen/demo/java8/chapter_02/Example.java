@@ -5,6 +5,7 @@ import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -179,18 +180,45 @@ public class Example {
 		Stream<Integer> values = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 		Optional<Integer> sum = values.reduce((x, y) -> x + y);
 		System.out.println(sum.get());
+		// 流只能被读一次
+		values = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 		sum = values.reduce(Integer::sum);
 		System.out.println(sum.get());
 	}
 
 	@Test
-	public void example_008_01() {
-		// e op x = x 做为起点
-		Stream<Integer> values = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
-		Optional<Integer> sum = values.reduce((x, y) -> x + y);
-		System.out.println(sum.get());
-		sum = values.reduce(Integer::sum);
-		System.out.println(sum.get());
+	public void example_009_00() {
+		// 收集结果
+		Stream<String> stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
+		String[] arr = stream.toArray(String[]::new);
+		Stream.of(arr).forEach(System.out::print); // ABCDEFGH
+
+		System.out.println();
+		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
+		stream.collect(Collectors.toList()).forEach(System.out::print); // ABCDEFGH
+
+		System.out.println();
+		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
+		stream.collect(Collectors.toSet()).forEach(System.out::print); // ABCDEFGH
+
+		System.out.println();
+		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
+		stream.collect(Collectors.toCollection(HashSet::new)).forEach(System.out::print); // ABCDEFGH
+
+		System.out.println();
+		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
+		stream.collect(Collectors.toCollection(HashSet::new)).forEach(System.out::print); // ABCDEFGH
+
+		System.out.println();
+		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
+		System.out.println(stream.collect(Collectors.joining(",", "(", ")"))); // (A,B,C,D,E,F,G,H)
+
+		System.out.println();
+		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
+		Map<String, Integer> map = stream.collect(Collectors.toMap(Function.identity(), x -> (int)x.charAt(0)));
+		map.keySet().forEach(x -> System.out.println(x + ":" + map.get(x)));
+
+
 	}
 
 	@Test
