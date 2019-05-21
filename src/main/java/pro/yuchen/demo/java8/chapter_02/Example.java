@@ -46,7 +46,7 @@ public class Example {
 		// limit 流的结束符
 		Object[] powers = Stream.iterate(1.0, x -> x * 2)
 								.peek(e -> System.out.println("Fetching " + e))
-								.limit(20).toArray();
+								.skip(10).limit(20).toArray();
 	}
 
 	/**
@@ -101,18 +101,15 @@ public class Example {
 	public void example_006_02() {
 		// 任意元素匹配
 		boolean largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").parallel().anyMatch(x -> x.startsWith("S"));
-		// true
-		System.out.println(largest);
+		System.out.println(largest); // true
 
 		// 所有元素都匹配
 		largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").parallel().allMatch(x -> x.startsWith("S"));
-		// false
-		System.out.println(largest);
+		System.out.println(largest); // false
 
 		// 没有元素匹配
 		largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D", "").parallel().noneMatch(String::isEmpty);
-		// false
-		System.out.println(largest);
+		System.out.println(largest); // false
 	}
 
 	/**
@@ -172,6 +169,7 @@ public class Example {
 
 	@Test
 	public void example_007_04() {
+		// flatMap()
 
 	}
 
@@ -185,7 +183,15 @@ public class Example {
 		System.out.println(sum.get());
 	}
 
-
+	@Test
+	public void example_008_01() {
+		// e op x = x 做为起点
+		Stream<Integer> values = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+		Optional<Integer> sum = values.reduce((x, y) -> x + y);
+		System.out.println(sum.get());
+		sum = values.reduce(Integer::sum);
+		System.out.println(sum.get());
+	}
 
 	@Test
 	public void example() {
