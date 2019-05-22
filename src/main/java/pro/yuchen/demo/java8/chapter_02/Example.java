@@ -176,6 +176,8 @@ public class Example {
 
 	@Test
 	public void example_008_00() {
+		// 聚合操作
+
 		// e op x = x 做为起点
 		Stream<Integer> values = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 		Optional<Integer> sum = values.reduce((x, y) -> x + y);
@@ -184,6 +186,10 @@ public class Example {
 		values = Stream.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 		sum = values.reduce(Integer::sum);
 		System.out.println(sum.get());
+
+
+
+
 	}
 
 	@Test
@@ -217,8 +223,6 @@ public class Example {
 		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
 		Map<String, Integer> map = stream.collect(Collectors.toMap(Function.identity(), x -> (int)x.charAt(0)));
 		map.keySet().forEach(x -> System.out.println(x + ":" + map.get(x)));
-
-
 	}
 
 	@Test
