@@ -1,5 +1,6 @@
 package pro.yuchen.demo.java8.chapter_02;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
 import org.junit.Test;
@@ -187,9 +188,6 @@ public class Example {
 		sum = values.reduce(Integer::sum);
 		System.out.println(sum.get());
 
-
-
-
 	}
 
 	@Test
@@ -237,6 +235,29 @@ public class Example {
 	}
 
 
+	@Test
+	public void demo() {
+		// 以10分钟为单位显示时间
+		Long t = new Date().getTime();
+		System.out.println(DateUtil.format(new Date(t), "yyyy-MM-dd HH:mm:ss"));
+		t = t - t % (1000 * 60 * 10);
+		System.out.println(DateUtil.format(new Date(t), "yyyy-MM-dd HH:mm:ss"));
 
+		// 比较器
+		String [] array = {"1_20120522183000","1_20190522184000","1_20290522181000","1_20190422181000"};
+		Optional<String> str = Stream.of(array).max((x, y) -> {
+			Long _x = DateUtil.parse(x.split("_")[1], "yyyyMMddHHmmss").getTime();
+			Long _y = DateUtil.parse(y.split("_")[1], "yyyyMMddHHmmss").getTime();
+			if (_x < _y) {
+				return -1;
+			} else if (_x > _y) {
+				return 1;
+			} else {
+				return 0;
+			}
+		});
+		System.out.println(str.get());
+
+	}
 
 }
