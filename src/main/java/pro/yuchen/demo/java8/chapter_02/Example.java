@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -197,31 +198,90 @@ public class Example {
 		String[] arr = stream.toArray(String[]::new);
 		Stream.of(arr).forEach(System.out::print); // ABCDEFGH
 
+		// toList
 		System.out.println();
 		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
 		stream.collect(Collectors.toList()).forEach(System.out::print); // ABCDEFGH
 
+		// toSet
 		System.out.println();
 		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
 		stream.collect(Collectors.toSet()).forEach(System.out::print); // ABCDEFGH
 
+		// HashSet
 		System.out.println();
 		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
 		stream.collect(Collectors.toCollection(HashSet::new)).forEach(System.out::print); // ABCDEFGH
 
-		System.out.println();
-		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
-		stream.collect(Collectors.toCollection(HashSet::new)).forEach(System.out::print); // ABCDEFGH
-
+		// joining
 		System.out.println();
 		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
 		System.out.println(stream.collect(Collectors.joining(",", "(", ")"))); // (A,B,C,D,E,F,G,H)
 
+		// toMap
 		System.out.println();
 		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
 		Map<String, Integer> map = stream.collect(Collectors.toMap(Function.identity(), x -> (int)x.charAt(0)));
-		map.keySet().forEach(x -> System.out.println(x + ":" + map.get(x)));
+		System.out.println(map);
+		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "", "H");
+		map = stream.filter(StrUtil::isNotBlank).collect(Collectors.toMap(Function.identity(), x -> (int)x.charAt(0), (x, y) -> x, TreeMap::new));
+		System.out.println(map);
 	}
+
+	@Test
+	public void example_011_00() {
+
+		// 分组
+		Stream<String> stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "", "H");
+		Map<Integer, List<String>> map_0 = stream.filter(StrUtil::isNotBlank).collect(Collectors.groupingBy(x -> x.charAt(0) % 3, Collectors.toList()));
+		System.out.println(map_0);
+
+		// 分片
+		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "", "H");
+		Predicate<String> predicate = x -> x.charAt(0) % 2 == 0;
+		Map<Boolean, Set<String>> map_1 = stream.filter(StrUtil::isNotBlank).collect(Collectors.partitioningBy(predicate, Collectors.toSet()));
+		System.out.println(map_1);
+
+		// downstream 处理
+		stream = Stream.of( "A", "B", "C", "D", "E", "F", "G", "H", "", "H");
+		// count
+		Map<Integer, Long> map_2 = stream.filter(StrUtil::isNotBlank).collect(Collectors.groupingBy(x -> x.charAt(0) % 3, Collectors.counting()));
+		System.out.println(map_2);
+
+		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "", "H");
+		// sum
+		Map<Integer, Long> map_3 = stream.filter(StrUtil::isNotBlank).collect(Collectors.groupingBy(x -> x.charAt(0) % 3, Collectors.summingLong(x -> x.charAt(0))));
+		System.out.println(map_3);
+
+		/*
+		 返回负数，意味着x比y小
+		 返回零，  意味着x等于y
+		 返回正数，意味着x比y大
+		 */
+		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "", "H");
+		Comparator<String> comparator = (x, y) -> {
+			if (x.charAt(0) > y.charAt(0)) {
+				return 1;
+			} else if (x.charAt(0) < y.charAt(0)) {
+				return -1;
+			} else {
+				return 0;
+			}
+		};
+		// max or min
+		Map<Object, Optional<String>> map_4 = stream.filter(StrUtil::isNotBlank).collect(Collectors.groupingBy(x -> x.charAt(0) % 3, Collectors.maxBy(comparator)));
+		System.out.println(map_4);
+
+		// mapping
+		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "", "H");
+		List<Integer> list = stream.filter(StrUtil::isNotBlank).collect(Collectors.mapping(x -> Integer.valueOf(x.charAt(0)), Collectors.toList()));
+		System.out.println(list);
+
+
+
+
+	}
+
 
 	@Test
 	public void example() {
@@ -234,7 +294,6 @@ public class Example {
 		System.out.println(expression);
 	}
 
-
 	@Test
 	public void demo() {
 		// 以10分钟为单位显示时间
@@ -242,8 +301,12 @@ public class Example {
 		System.out.println(DateUtil.format(new Date(t), "yyyy-MM-dd HH:mm:ss"));
 		t = t - t % (1000 * 60 * 10);
 		System.out.println(DateUtil.format(new Date(t), "yyyy-MM-dd HH:mm:ss"));
-
 		// 比较器
+		/*
+		 返回负数，意味着x比y小
+		 返回零，  意味着x等于y
+		 返回正数，意味着x比y大
+		 */
 		String [] array = {"1_20120522183000","1_20190522184000","1_20290522181000","1_20190422181000"};
 		Optional<String> str = Stream.of(array).max((x, y) -> {
 			Long _x = DateUtil.parse(x.split("_")[1], "yyyyMMddHHmmss").getTime();
