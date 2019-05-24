@@ -221,10 +221,10 @@ public class Example {
 		// toMap
 		System.out.println();
 		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
-		Map<String, Integer> map = stream.collect(Collectors.toMap(Function.identity(), x -> (int)x.charAt(0)));
+		Map<String, Integer> map = stream.collect(Collectors.toMap(Function.identity(), x -> (int) x.charAt(0)));
 		System.out.println(map);
 		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "", "H");
-		map = stream.filter(StrUtil::isNotBlank).collect(Collectors.toMap(Function.identity(), x -> (int)x.charAt(0), (x, y) -> x, TreeMap::new));
+		map = stream.filter(StrUtil::isNotBlank).collect(Collectors.toMap(Function.identity(), x -> (int) x.charAt(0), (x, y) -> x, TreeMap::new));
 		System.out.println(map);
 	}
 
