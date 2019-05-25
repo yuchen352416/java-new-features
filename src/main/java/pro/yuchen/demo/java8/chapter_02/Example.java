@@ -26,7 +26,7 @@ public class Example {
 		// 聚合
 //		example_006_00();
 //		example_006_01();
-		example_006_02();
+//		example_006_02();
 
 
 	}
@@ -91,6 +91,9 @@ public class Example {
 		System.out.println(largest.get());
 	}
 
+	/**
+	 * 检索
+	 */
 	private static void example_006_01() {
 		// 查找第一个符合条件的item(找到第一个, 结束流)
 		Optional<String> largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").filter(x -> x.startsWith("S")).findFirst();
@@ -101,10 +104,14 @@ public class Example {
 		System.out.println(largest.get());
 	}
 
+	/**
+	 * 判断流中是否包含Item
+	 */
 	private static void example_006_02() {
 		boolean largest = Stream.of("SSS", "SS", "S", "A", "B", "C", "D").parallel().anyMatch(x -> x.startsWith("S"));
 		System.out.println(largest);
 	}
+
 
 
 
