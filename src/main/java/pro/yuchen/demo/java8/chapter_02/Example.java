@@ -101,7 +101,7 @@ public class Example {
 	}
 
 	/**
-	 * 是否匹配
+	 * 判断流中是否包含Item
 	 */
 	@Test
 	public void example_006_02() {
@@ -334,6 +334,7 @@ public class Example {
 		System.out.println(str.get());
 
 	}
+
 
 }
 
