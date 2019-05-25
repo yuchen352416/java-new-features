@@ -1,8 +1,7 @@
-package pro.yuchen.demo.java8.chapter_03;
+package pro.yuchen.demo.java8.chapter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
@@ -11,7 +10,7 @@ import java.util.stream.Collectors;
  * @author: Mr.Lee
  * @date: 2019-05-16 17:24
  */
-public class Demo {
+public class Demo_001 {
 
 	private static List<DataBaseFunction> functions = new ArrayList<>();
 

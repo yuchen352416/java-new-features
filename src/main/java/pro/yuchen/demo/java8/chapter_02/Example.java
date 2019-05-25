@@ -2,12 +2,15 @@ package pro.yuchen.demo.java8.chapter_02;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSON;
+import cn.hutool.json.JSONObject;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -223,9 +226,9 @@ public class Example {
 		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H");
 		Map<String, Integer> map = stream.collect(Collectors.toMap(Function.identity(), x -> (int) x.charAt(0)));
 		System.out.println(map);
-		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "", "H");
-		map = stream.filter(StrUtil::isNotBlank).collect(Collectors.toMap(Function.identity(), x -> (int) x.charAt(0), (x, y) -> x, TreeMap::new));
-		System.out.println(map);
+//		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "", "H");
+//		map = stream.filter(StrUtil::isNotBlank).collect(Collectors.toMap(Function.identity(), x -> (int) x.charAt(0), (x, y) -> x, TreeMap::new));
+//		System.out.println(map);
 	}
 
 	@Test
@@ -272,12 +275,21 @@ public class Example {
 		Map<Object, Optional<String>> map_4 = stream.filter(StrUtil::isNotBlank).collect(Collectors.groupingBy(x -> x.charAt(0) % 3, Collectors.maxBy(comparator)));
 		System.out.println(map_4);
 
-		// mapping
-		stream = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "", "H");
-		List<Integer> list = stream.filter(StrUtil::isNotBlank).collect(Collectors.mapping(x -> Integer.valueOf(x.charAt(0)), Collectors.toList()));
-		System.out.println(list);
-
-
+		// groupingby & mapping
+		Stream<BlogPost> blogs = Stream.of(
+				new BlogPost("A", "yuchen", BlogPostType.GUIDE, 1),
+				new BlogPost("B", "yuchen", BlogPostType.GUIDE, 2),
+				new BlogPost("C", "yuchen", BlogPostType.GUIDE, 3),
+				new BlogPost("D", "yuchen", BlogPostType.REVIEW, 4),
+				new BlogPost("E", "yuchen", BlogPostType.REVIEW, 5),
+				new BlogPost("F", "yuchen", BlogPostType.REVIEW, 6),
+				new BlogPost("G", "yuchen", BlogPostType.NEWS, 7),
+				new BlogPost("H", "yuchen", BlogPostType.NEWS, 8),
+				new BlogPost("I", "yuchen", BlogPostType.NEWS, 9)
+				);
+		Map<BlogPostType, List<BlogPost>> map_5 = blogs.collect(Collectors.groupingBy(BlogPost::getType, Collectors.mapping(Function.identity(), Collectors.toList())));
+		JSONObject json = new JSONObject(map_5);
+		System.out.println(json.toJSONString(0));
 
 
 	}
@@ -324,3 +336,51 @@ public class Example {
 	}
 
 }
+
+class BlogPost {
+	String title;
+	String author;
+	BlogPostType type;
+	int likes;
+
+	public BlogPost(String title, String author, BlogPostType type, int likes) {
+		this.title = title;
+		this.author = author;
+		this.type = type;
+		this.likes = likes;
+	}
+
+	@Override
+	public String toString() {
+		return "BlogPost{" +
+				"title='" + title + '\'' +
+				", author='" + author + '\'' +
+				", type=" + type +
+				", likes=" + likes +
+				'}';
+	}
+
+	public String getTitle() {
+		return title;
+	}
+
+	public String getAuthor() {
+		return author;
+	}
+
+	public BlogPostType getType() {
+		return type;
+	}
+
+	public int getLikes() {
+		return likes;
+	}
+}
+
+enum BlogPostType {
+	NEWS,
+	REVIEW,
+	GUIDE
+}
+
+
