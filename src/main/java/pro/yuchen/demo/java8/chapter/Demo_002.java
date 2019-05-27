@@ -28,33 +28,6 @@ public class Demo_002 {
 		pdf.close();
 		*/
 
-//		Document document = new Document(PageSize.A4, 0, 0, 0, 0);
-//		PdfWriter.getInstance(document, new FileOutputStream(pdfPath));
-//		document.open();
-//		BGPic border = new BGPic();
-//		float wid = 80f;
-//		float hei = 100f;
-//		float[] widArr = { wid, wid };
-//		PdfPTable table = new PdfPTable(2);
-//		table.setTotalWidth(widArr);
-//		table.setLockedWidth(true);
-//		PdfPCell cell = null;
-//
-//		for (int i = 1; i <= 4; i++) {
-//			Image img = Image.getInstance(imagePath);
-//			cell = new PdfPCell(img, true);
-//			cell.setFixedHeight(hei);
-//			cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-//			cell.setPadding(8);
-//			cell.setCellEvent(border);  // 加入背景图片
-//			table.addCell(cell);
-//		}
-//
-//		document.add(table);
-//		document.close();
-
-
-
 		PdfReader reader = new PdfReader(pdfPath);
 		PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(outPath));
 		PdfContentByte content = stamper.getOverContent(1);
@@ -63,6 +36,7 @@ public class Demo_002 {
 		image.scaleAbsolute(reader.getCropBox(1).getWidth(), reader.getCropBox(1).getHeight());
 		image.setAlignment(Image.ALIGN_CENTER);
 //		layer
+//		image.setLayer();
 
 		content.addImage(image);
 		stamper.close();
