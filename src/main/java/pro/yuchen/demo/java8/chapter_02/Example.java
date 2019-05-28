@@ -7,9 +7,7 @@ import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -343,7 +341,7 @@ public class Example {
 	public void example_013_00() {
 		// 并行流
 		int[] arr = new int[12];
-		Stream<String> words = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L");
+		Stream<String> words = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "", "AAA");
 		// parallel 使 consumer 在多线程下执行, 但主线程会进行等待
 		// 由于 arr 并非原子操作, 当在多线程环境下, 同时对同一下标的item进行修改时, 可能会出现值覆盖现象
 		Consumer<String> consumer = x -> {
@@ -353,14 +351,87 @@ public class Example {
 			}
 		};
 		words.parallel().forEach(consumer);
-		System.out.println(Arrays.toString(arr));
+		// 但结果是混沌的
+		System.out.println(Arrays.toString(arr)); // [0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+		words = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "", "AAA");
+		Collection<Long> list = words.collect(Collectors.groupingBy(String::length, Collectors.counting())).values();
+		System.out.println(list); // [1, 11, 1]
+
+		List<String> arr_1 = new ArrayList<>(Arrays.asList("A", "B", "C", "", "A"));
+		words = arr_1.stream();
+		arr_1.addAll(Arrays.asList("X", "Y", "Z"));
+		Long n = words.distinct().filter(StrUtil::isNotBlank).count();
+		System.out.println(n); // 6
 	}
 
 	@Test
 	public void example_014_00() {
-		
-	}
+		// 函数式接口
+		/*
+		函数式接口				参数类型		返回类型		描述
+		Supplier<T>				无			T			提供一个T类型的值
+		Consumer<T>				T			void		处理一个T类型的值
+		BiConsumer<T, U>		T, U		void		处理T类型和U类型的值
+		Predicate<T>			T			boolean 	一个计算boolean值的函数
+		ToIntFunction<T>		T			int			参数为T, 返回为int
+		TOLongFunction<T>		T			long		参数为T, 返回为long
+		ToDoubleFunction<T>		T			double		参数为T, 返回为double
+		IntFunction<R>			int			R			参数为int, 返回为R
+		LongFunction<R>	    	long		R			参数为long, 返回为R
+		DoubleFunction<R>		double		R			参数为double, 返回为R
+		Function<T, R>			T 			R			参数为T, 返回为R
+		BiFunction<T, U, R> 	T, U 		R 			参数为T, U, 返回为R
+		UnaryOperator<T>		T			T			参数为T, 返回为T
+		BinaryOperator<T>		T, T 		T			参数为T, T, 返回为T
+		*/
+		Supplier<String> supplier = () -> "Hello Supplier"; // 原来的无参方法
+		System.out.println(supplier.get());
 
+		Consumer<StringJoiner> consumer = x -> x.add("Hello").add("Consumer");
+		StringJoiner joiner = new StringJoiner(" ");
+		consumer.accept(joiner);
+		System.out.println(joiner.toString());
+
+		BiConsumer<StringJoiner, String> biConsumer = (join, s) -> join.add(String.valueOf(s.length()));
+		biConsumer.accept(joiner, "X.X.X");
+		System.out.println(joiner.toString());
+
+		Predicate<String> predicate = x -> x.length() > 12;
+		System.out.println(predicate.test("xxx"));
+
+		ToIntFunction<String> toInt = x -> x.length(); // String::length
+		System.out.println(toInt.applyAsInt("xxx"));
+
+		ToLongFunction<String> toLong = x -> Long.valueOf(x.length());
+		System.out.println(toLong.applyAsLong("xxx"));
+
+		ToDoubleFunction<String> toDouble = x -> Double.valueOf(x.length());
+		System.out.println(toDouble.applyAsDouble("xxx"));
+
+		IntFunction<String> intFunction = x -> String.valueOf(x); // String::valueOf
+		System.out.println(intFunction.apply(1));
+
+		LongFunction<String> longFunction = x -> String.valueOf(x); // String::valueOf
+		System.out.println(longFunction.apply(1L));
+
+		DoubleFunction<String> doubleFunction = x -> String.valueOf(x); // String::valueOf
+		System.out.println(doubleFunction.apply(1.0));
+
+		Function<String, Integer> function = s -> s.length(); // String::length
+		System.out.println(function.apply("xxx"));
+
+		BiFunction<Integer, Double, String> biFunction = (x, y) -> String.valueOf(x + y);
+		System.out.println(biFunction.apply(1, 1.0));
+
+		UnaryOperator<StringJoiner> unaryOperator = x -> x.add("X.X.X.X.X.X.X");
+		joiner = unaryOperator.apply(joiner);
+		System.out.println(joiner.toString());
+
+		BinaryOperator<String> binaryOperator = (x, y) -> x + y;
+		System.out.println(binaryOperator.apply("ABC", "DEF"));
+
+	}
 
 	@Test
 	public void example() {
