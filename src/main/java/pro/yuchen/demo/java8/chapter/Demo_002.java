@@ -37,30 +37,8 @@ public class Demo_002 {
 		image.setAlignment(Image.ALIGN_CENTER);
 //		layer
 //		image.setLayer();
-
 		content.addImage(image);
 		stamper.close();
 		reader.close();
-
-	}
-
-
-}
-
-
-class BGPic implements PdfPCellEvent {
-	public void cellLayout(PdfPCell cell, Rectangle rect, PdfContentByte[] canvas) {
-		PdfContentByte cb = canvas[PdfPTable.BACKGROUNDCANVAS];
-		Image img = null;
-		try {
-			img = Image.getInstance("/Users/Selfimpr/Desktop/confirmation.jpg");
-			img.scaleAbsolute(80, 100);  // 设置背景图片的大小
-			img.setAbsolutePosition(298, 606);  // 设置第一个背景图片的绝对位置
-			cb.addImage(img);
-			img.setAbsolutePosition(217, 706);  // 设置第二个背景图片的绝对位置
-			cb.addImage(img);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 }

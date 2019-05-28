@@ -2,16 +2,16 @@ package pro.yuchen.demo.java8.chapter_02;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSON;
 import cn.hutool.json.JSONObject;
 import com.google.common.collect.Lists;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -277,27 +277,94 @@ public class Example {
 
 		// groupingby & mapping
 		Stream<BlogPost> blogs = Stream.of(
-				new BlogPost("A", "yuchen", BlogPostType.GUIDE, 1),
-				new BlogPost("B", "yuchen", BlogPostType.GUIDE, 2),
-				new BlogPost("C", "yuchen", BlogPostType.GUIDE, 3),
-				new BlogPost("D", "yuchen", BlogPostType.REVIEW, 4),
-				new BlogPost("E", "yuchen", BlogPostType.REVIEW, 5),
-				new BlogPost("F", "yuchen", BlogPostType.REVIEW, 6),
-				new BlogPost("G", "yuchen", BlogPostType.NEWS, 7),
-				new BlogPost("H", "yuchen", BlogPostType.NEWS, 8),
-				new BlogPost("I", "yuchen", BlogPostType.NEWS, 9)
-				);
+			new BlogPost("A", "yuchen", BlogPostType.GUIDE, 1),
+			new BlogPost("B", "yuchen", BlogPostType.GUIDE, 2),
+			new BlogPost("C", "yuchen", BlogPostType.GUIDE, 3),
+			new BlogPost("D", "yuchen", BlogPostType.REVIEW, 4),
+			new BlogPost("E", "yuchen", BlogPostType.REVIEW, 5),
+			new BlogPost("F", "yuchen", BlogPostType.REVIEW, 6),
+			new BlogPost("G", "yuchen", BlogPostType.NEWS, 7),
+			new BlogPost("H", "yuchen", BlogPostType.NEWS, 8),
+			new BlogPost("I", "yuchen", BlogPostType.NEWS, 9)
+		);
 		Map<BlogPostType, List<BlogPost>> map_5 = blogs.collect(Collectors.groupingBy(BlogPost::getType, Collectors.mapping(Function.identity(), Collectors.toList())));
 		JSONObject json = new JSONObject(map_5);
 		System.out.println(json.toJSONString(0));
 
+		// 分组聚合操作
+		blogs = Stream.of(
+			new BlogPost("A", "yuchen", BlogPostType.GUIDE, 1),
+			new BlogPost("B", "yuchen", BlogPostType.GUIDE, 2),
+			new BlogPost("C", "yuchen", BlogPostType.GUIDE, 3),
+			new BlogPost("D", "yuchen", BlogPostType.REVIEW, 4),
+			new BlogPost("E", "yuchen", BlogPostType.REVIEW, 5),
+			new BlogPost("F", "yuchen", BlogPostType.REVIEW, 6),
+			new BlogPost("G", "yuchen", BlogPostType.NEWS, 7),
+			new BlogPost("H", "yuchen", BlogPostType.NEWS, 8),
+			new BlogPost("I", "yuchen", BlogPostType.NEWS, 9)
+		);
 
+		Map<String, String> map_6 = blogs.collect(Collectors.groupingBy(x -> x.getType().toString(), Collectors.reducing("", BlogPost::getTitle, (x, y) -> x + y)));
+		json = new JSONObject(map_6);
+		System.out.println(json.toString());
+	}
+
+	@Test
+	public void example_012_00() {
+		// 原始类型
+		IntStream stream = IntStream.of(1, 2, 3);
+		stream.forEach(System.out::print);
+
+		System.out.println();
+		int[] arr = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
+		stream = Arrays.stream(arr, 1, 8);
+		stream.forEach(System.out::print);
+
+		System.out.println();
+		stream = IntStream.range(0, 100); // 0~99
+		stream.forEach(x -> System.out.print(x + " "));
+
+		System.out.println();
+		stream = IntStream.rangeClosed(0, 100); // 0~100
+		stream.forEach(x -> System.out.print(x + " "));
+
+		// mapToInt, mapToLong, mapToDouble
+		System.out.println();
+		stream = Stream.of("", "A", "B", "C", "D", "E", "F").mapToInt(String::length);
+		stream.forEach(x -> System.out.print(x + " "));
+
+		// 原始流转对象流
+		System.out.println();
+		Stream<Integer> stream_1 = IntStream.of(arr).boxed();
+		stream_1.forEach(x -> System.out.print(x + " "));
+	}
+
+	@Test
+	public void example_013_00() {
+		// 并行流
+		int[] arr = new int[12];
+		Stream<String> words = Stream.of("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L");
+		// parallel 使 consumer 在多线程下执行, 但主线程会进行等待
+		// 由于 arr 并非原子操作, 当在多线程环境下, 同时对同一下标的item进行修改时, 可能会出现值覆盖现象
+		Consumer<String> consumer = x -> {
+//			try { Thread.sleep(1000); } catch (InterruptedException e) {e.printStackTrace();}
+			if(x.length() < 12) {
+				arr[x.length()]++;
+			}
+		};
+		words.parallel().forEach(consumer);
+		System.out.println(Arrays.toString(arr));
+	}
+
+	@Test
+	public void example_014_00() {
+		
 	}
 
 
 	@Test
 	public void example() {
-		String expression = "TEXT_1 +sum (TEXT_2)";
+		String expression = "TEXT_1 + sum (TEXT_2)";
 		List<String> functions = Arrays.asList("AVG", "COUNT", "MAX", "MIN", "SUM",
 											   "COUNT_BIG", "GROUPING", "BINARY_CHECKSUM", "CHECKSUM_AGG",
 											   "CHECKSUM", "STDEV", "STDEVP", "VAR", "VARP");
