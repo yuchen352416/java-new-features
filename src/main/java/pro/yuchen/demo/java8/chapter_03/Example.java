@@ -1,6 +1,5 @@
 package pro.yuchen.demo.java8.chapter_03;
 
-import cn.hutool.core.util.StrUtil;
 import org.junit.Test;
 
 import java.util.ArrayList;
