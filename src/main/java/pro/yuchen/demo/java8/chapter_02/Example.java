@@ -169,6 +169,9 @@ public class Example {
 		// value == null ? empty() : of(value)
 		optional = Optional.ofNullable(x);
 		System.out.println(optional.get());
+		x = null;
+		Optional<Double> o = Optional.of(Optional.ofNullable(x).orElseGet(() -> 0.0));
+		System.out.println(o.get());
 	}
 
 	@Test
